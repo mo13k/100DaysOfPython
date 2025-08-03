@@ -10,10 +10,16 @@ class QuizBrain:
     def nextquestion(self):
         currentquestion = self.questionlist[self.questionnum]
         self.questionnum += 1
-        if self.qtype == "boolean":
-            useranswer = input(f"Q.{self.questionnum}: {currentquestion.text} (True/False): ")
+        print(f"Q.{self.questionnum}: {currentquestion.text}")
+
+        if currentquestion.options:
+            for i, option in enumerate(currentquestion.options, 1):
+                print(f"{i}: {option}")
+
+            useranswer = input("Enter the number of your answer: ")
         else:
-            useranswer = input(f"Q.{self.questionnum}: {currentquestion.text}: ")
+            useranswer = input("True/False: ")
+        
         self.check_answer(useranswer, currentquestion.answer)
     
     def still_has_questions(self):
