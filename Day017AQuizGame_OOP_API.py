@@ -1,10 +1,11 @@
 #Quiz Game
-from question_model import Question
-from quiz_brain import QuizBrain
+from Day017Azquestion_model import Question
+from Day017Azquiz_brain import QuizBrain
 from art import text2art
 import requests
 import os
 import html
+import random
 
 def clear():
     os.system('cls' if os.name == 'nt' else 'clear')
@@ -35,13 +36,19 @@ data, qtype = get_questions()
 questionbank = []
 for question in data:
     questiontext = html.unescape(question["question"])
-    questionanswer = html.unescape(question["correct_answer"])
-    newquestion = Question(qtext = questiontext, qanswer = questionanswer)
+    correctanswer = html.unescape(question["correct_answer"])
+    incorrectanswers = [html.unescape(answer) for answer in question["incorrect_answers"]]
+
+    allanswers = incorrectanswers + [correctanswer]
+    random.shuffle(allanswers)
+    newquestion = Question(qtext = questiontext, qanswer = correctanswer, options = allanswers)
+
     questionbank.append(newquestion)
 
 quiz = QuizBrain(qlist = questionbank, qtype = qtype)
 while quiz.still_has_questions():
     quiz.nextquestion()
 
-print(f"Your final score was {quiz.score}/{quiz.questionnum}")
+percentage = (quiz.score / quiz.questionnum) * 100
+print(f"You scored {percentage}%")
 print("Thank you for playing Mo's Quiz!")
